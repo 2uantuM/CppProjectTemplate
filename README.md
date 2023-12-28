@@ -94,7 +94,7 @@ cd app
 - Unit testing
 
 ```shell
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTS=ON ..
 cmake --build . --config Release --target unit_tests
 cd tests
 ./unit_tests

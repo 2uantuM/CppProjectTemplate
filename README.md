@@ -1,24 +1,19 @@
 # Template For C++ Projects
 
-![C++](https://img.shields.io/badge/C%2B%2B-11%2F14%2F17%2F20%2F23-blue)
-![License](https://camo.githubusercontent.com/890acbdcb87868b382af9a4b1fac507b9659d9bf/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d4d49542d626c75652e737667)
-![Linux Build](https://github.com/franneck94/CppProjectTemplate/workflows/Ubuntu%20CI%20Test/badge.svg)
-[![codecov](https://codecov.io/gh/franneck94/CppProjectTemplate/branch/master/graph/badge.svg)](https://codecov.io/gh/franneck94/CppProjectTemplate)
-
-This is a template for C++ projects. What you get:
+This is a template for C++ projects based off of [franneck94's CppProjectTemplate](https://github.com/franneck94/CppProjectTemplate). Here's what you get:
 
 - Library, executable and test code separated in distinct folders
 - Use of modern CMake for building and compiling
 - External libraries installed and managed by
-  - [CPM](https://github.com/cpm-cmake/CPM.cmake) Package Manager OR
   - [Conan](https://conan.io/) Package Manager OR
-  - [VCPKG](https://github.com/microsoft/vcpkg) Package Manager
-- Unit testing using [Catch2](https://github.com/catchorg/Catch2) v2
-- General purpose libraries: [JSON](https://github.com/nlohmann/json), [spdlog](https://github.com/gabime/spdlog), [cxxopts](https://github.com/jarro2783/cxxopts) and [fmt](https://github.com/fmtlib/fmt)
+  - [Manual Inclusion](#manual-dependency-inclusion)
+- Unit testing using [Gtest](https://github.com/google/googletest)
+- Example use of general purpose library use (such as [fmt](https://github.com/fmtlib/fmt))
 - Continuous integration testing with Github Actions and [pre-commit](https://pre-commit.com/)
 - Code coverage reports, including automatic upload to [Codecov](https://codecov.io)
-- Code documentation with [Doxygen](https://doxygen.nl/) and [Github Pages](https://franneck94.github.io/CppProjectTemplate/)
-- Tooling: Clang-Format, Cmake-Format, Clang-tidy, Sanitizers
+- Code documentation with [Doxygen](https://doxygen.nl/)
+- Tooling: Clang-Format, Cmake-Format, Clang-tidy (static analysis), Sanitizers
+- Easy Warning Configuration (see cmake/Warnings.cmake)
 
 ## Structure
 
@@ -33,7 +28,6 @@ This is a template for C++ projects. What you get:
 │   ├── Doxyfile
 │   └── html/
 ├── external
-│   ├── CMakesLists.txt
 │   ├── ...
 ├── src
 │   ├── CMakesLists.txt
@@ -47,28 +41,48 @@ This is a template for C++ projects. What you get:
 Library code goes into [src/](src/), main program code in [app/](app) and tests go in [tests/](tests/).
 
 ## Software Requirements
-
+### Mandatory
 - CMake 3.21+
-- GNU Makefile
-- Doxygen
-- Conan or VCPKG
+- Dependency Management (any of the below):
+  * Conan 2.0+
+  * Git for fetching submodule internet connected machines. If an internet connection is unavailable, see [here](#manual-dependency-inclusion))
 - MSVC 2017 (or higher), G++9 (or higher), Clang++9 (or higher)
-- Optional: Code Coverage (only on GNU|Clang): lcov, gcovr
-- Optional: Makefile, Doxygen, Conan, VCPKG
+
+### Optional
+- LLVM Toolchain 17.0+ (clang-format, clang-tidy)
+- Doxygen
+- Code Coverage (only on GNU or Clang): lcov, gcovr
+- Graphviz
+
+## External Software Dependencies
+- fmtlib (version 9.1.0+)
+- gtest (version 1.14.0+)
 
 ## Building
+
+All commands are written assuming linux or git bash is being used. It is also written assuming you are building for Release (if Debug is desired, replace Release with Debug as needed)
 
 First, clone this repo and do the preliminary work:
 
 ```shell
-git clone --recursive https://github.com/franneck94/CppProjectTemplate
-make prepare
+git clone http://url/to/repository.git
 ```
 
-- App Executable
+Create and change into the build directory (git bash):
+```
+rm -rf build
+mkdir build 
+cd build
+```
+
+If using conan, resolve dependencies (if not, see [see here](#manual-dependency-inclusion)
+```
+conan install .. -s build_type=Release --output-folder=. --build missing -s compiler.cppstd=17
+```
+
+Building the App Executable
 
 ```shell
-cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release --target main
 cd app
@@ -78,7 +92,6 @@ cd app
 - Unit testing
 
 ```shell
-cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 cmake --build . --config Debug --target unit_tests
 cd tests
@@ -88,17 +101,41 @@ cd tests
 - Documentation
 
 ```shell
-cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 cmake --build . --config Debug --target docs
 ```
 
-- Code Coverage (Unix only)
+- Code Coverage (Unix only -- Debug is required!)
 
 ```shell
-cd build
 cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON ..
 cmake --build . --config Debug --target coverage
 ```
 
-For more info about CMake see [here](./README_cmake.md).
+## Manual Dependency Inclusion
+If Conan is unavailable as a package manager, the cmake scripts will attempt to look for the required dependencies in the "external" folder. The user will be expected to place the required dependencies as follows:
+
+```text
+├── CMakeLists.txt
+├── app
+├── cmake
+├── docs
+├── external
+│   ├── <dependency1>
+│       └── <dependency1 repository files>
+|   └── <dependency2>
+│       └── <dependency2 repository files>
+├── src
+└── tests
+```
+
+Note that the names should match what is specified in [this section](#external-software-dependencies).
+
+When using CMake builds conan must be set to disabled through the "USE_CONAN" option. This can be done by editting the global CMakeLists.txt or through a command line argument. For example:
+
+```
+cmake -DCMAKE_BUILD_TYPE=Release -DUSE_CONAN=OFF ..
+```
+
+
+

@@ -67,10 +67,15 @@ endif()
 
 # EXTERNAL LIBRARIES
 
-message(STATUS "Using Conan")
-include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
-find_package(fmt REQUIRED)
-find_package(gtest REQUIRED)
+if(USE_CONAN)
+	message(STATUS "Using Conan")
+	include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
+	find_package(fmt REQUIRED)
+	find_package(gtest REQUIRED)
+else()
+	add_subdirectory(external/fmt)
+	add_subdirectory(external/gtest)
+endif()
 # SUB DIRECTORIES
 
 add_subdirectory(configured)

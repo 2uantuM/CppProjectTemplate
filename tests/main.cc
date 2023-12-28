@@ -1,18 +1,18 @@
 #define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <gtest/gtest.h>
 
 #include "my_lib.h"
 
-TEST_CASE("Factorials are computed", "[factorial]")
+TEST(FactorialTests, Test1)
 {
-    REQUIRE(factorial(0) == 1);
-    REQUIRE(factorial(1) == 1);
-    REQUIRE(factorial(2) == 2);
-    REQUIRE(factorial(3) == 6);
-    REQUIRE(factorial(10) == 3628800);
+    EXPECT_TRUE(factorial(0) == 1);
+    EXPECT_TRUE(factorial(1) == 1);
+    EXPECT_TRUE(factorial(2) == 2);
+    EXPECT_TRUE(factorial(3) == 6);
+    EXPECT_TRUE(factorial(10) == 3628800);
 }
 
-TEST_CASE("Test printer function", "[print_hello_world]")
-{
-    REQUIRE(print_hello_world() == 1);
+int main(int argc, char **argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

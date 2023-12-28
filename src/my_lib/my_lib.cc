@@ -1,13 +1,10 @@
 #include <iostream>
 
-#include "nlohmann/json.hpp"
-
-#include "my_lib.h"
+#include "fmt/core.h"
 
 int print_hello_world()
 {
-    std::cout << "Cout: Hello World" << '\n';
-    std::cout << NLOHMANN_JSON_VERSION_MAJOR << '\n';
+    fmt::print("Hello World\n");
 
     // Adress Sanitizer should see this :)
     // int *x = new int[42];

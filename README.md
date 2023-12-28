@@ -5,7 +5,8 @@ This is a template for C++ projects based off of [franneck94's CppProjectTemplat
 - Library, executable and test code separated in distinct folders
 - Use of modern CMake for building and compiling
 - External libraries installed and managed by
-  - [Conan](https://conan.io/) Package Manager OR
+  - [Conan](https://conan.io/) Package Manager
+  - Submodules
   - [Manual Inclusion](#manual-dependency-inclusion)
 - Unit testing using [Gtest](https://github.com/google/googletest)
 - Example use of general purpose library use (such as [fmt](https://github.com/fmtlib/fmt))
@@ -43,6 +44,7 @@ Library code goes into [src/](src/), main program code in [app/](app) and tests 
 ## Software Requirements
 ### Mandatory
 - CMake 3.21+
+- Git
 - Dependency Management (any of the below):
   * Conan 2.0+
   * Git for fetching submodule internet connected machines. If an internet connection is unavailable, see [here](#manual-dependency-inclusion))
@@ -65,18 +67,18 @@ All commands are written assuming linux or git bash is being used. It is also wr
 First, clone this repo and do the preliminary work:
 
 ```shell
-git clone http://url/to/repository.git
+git clone --recursive http://url/to/repository.git
 ```
 
 Create and change into the build directory (git bash):
-```
+```shell
 rm -rf build
 mkdir build 
 cd build
 ```
 
 If using conan, resolve dependencies (if not, see [see here](#manual-dependency-inclusion)
-```
+```shell
 conan install .. -s build_type=Release --output-folder=. --build missing -s compiler.cppstd=17
 ```
 
@@ -92,8 +94,8 @@ cd app
 - Unit testing
 
 ```shell
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-cmake --build . --config Debug --target unit_tests
+cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake --build . --config Release --target unit_tests
 cd tests
 ./unit_tests
 ```
@@ -101,11 +103,11 @@ cd tests
 - Documentation
 
 ```shell
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Debug --target docs
 ```
 
-- Code Coverage (Unix only -- Debug is required!)
+- Code Coverage (Unix only)
 
 ```shell
 cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON ..

@@ -13,6 +13,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Options
 option(USE_CONAN "Whether to use Conan." ON)
+option(USE_SUBMODULES "Whether to use submodules." OFF)
 
 option(ENABLE_WARNINGS "Enable to add warnings to a target." ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Enable to treat warnings as errors." ON)
@@ -75,6 +76,10 @@ if(USE_CONAN)
 else()
 	add_subdirectory(external/fmt)
 	add_subdirectory(external/gtest)
+endif()
+
+if(USE_SUBMODULES)
+	# add_submodule(YourSubmoduleName)
 endif()
 # SUB DIRECTORIES
 

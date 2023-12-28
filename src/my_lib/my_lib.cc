@@ -6,7 +6,7 @@ int print_hello_world()
 {
     fmt::print("Hello World\n");
 
-    // Adress Sanitizer should see this :)
+    // Address Sanitizer should see this :)
     // int *x = new int[42];
 
     return 1;
